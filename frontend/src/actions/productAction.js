@@ -3,14 +3,31 @@ import { ALL_PRODUCTS_FAIL,ALL_PRODUCTS_REQUEST,ALL_PRODUCTS_SUCCESS,PRODUCT_DET
 import baseUrl from "../baseUrl";
 import mockProducts from "../mockProducts";
 
+const isProdWithoutApi =
+    process.env.NODE_ENV === "production" && !process.env.REACT_APP_API_URL;
+
 export const getProducts = (keyword = "", page = 1, price = [1, 500], category = "", ratings = 0, limit = 8) => async (dispatch) => {
 
     try {
 dispatch({type:ALL_PRODUCTS_REQUEST})
 
+        if (isProdWithoutApi) {
+            dispatch({
+                type: ALL_PRODUCTS_SUCCESS,
+                payload: {
+                    success: true,
+                    results: mockProducts,
+                    filteredProductsCount: mockProducts.length,
+                    totalResults: mockProducts.length,
+                    productsPerPage: mockProducts.length,
+                },
+            });
+            return;
+        }
+
         
      
-        const { data } = await axios.get(`${baseUrl}/api/v1/products?keyword=${keyword}&page=${page}&limit=${limit}&priceMax=${price[1]}&priceMin=${price[0]}&category=${category}&ratingMin=${ratings}`)
+        const { data } = await axios.get(`${baseUrl}/api/v1/products?keyword=${keyword}&page=${page}&limit=${limit}&priceMax=${price[1]}&priceMin=${price[0]}&category=${category}&ratingMin=${ratings}`, { timeout: 8000 })
 
    
     
@@ -49,7 +66,19 @@ export const getProductDetails = (id) => async (dispatch) => {
 
         dispatch({ type: PRODUCT_DETAILS_REQUEST })
 
-        const { data } = await axios.get(`${baseUrl}/api/v1/products/${id}`)
+        if (isProdWithoutApi) {
+            const mockProduct = mockProducts.find((product) => product._id === id) || mockProducts[0];
+            dispatch({
+                type: PRODUCT_DETAILS_SUCCESS,
+                payload: {
+                    success: true,
+                    product: mockProduct,
+                },
+            });
+            return;
+        }
+
+        const { data } = await axios.get(`${baseUrl}/api/v1/products/${id}`, { timeout: 8000 })
        
         dispatch({
             type: PRODUCT_DETAILS_SUCCESS,
