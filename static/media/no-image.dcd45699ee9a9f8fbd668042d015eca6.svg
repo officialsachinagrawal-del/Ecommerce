@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-label="No image">
+  <rect width="600" height="600" fill="#e5e7eb" />
+  <g fill="#6b7280" font-family="Arial, sans-serif" text-anchor="middle">
+    <text x="300" y="280" font-size="42" font-weight="700">No Image</text>
+    <text x="300" y="325" font-size="20">Image unavailable</text>
+  </g>
+</svg>
