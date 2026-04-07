@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ALL_PRODUCTS_FAIL,ALL_PRODUCTS_REQUEST,ALL_PRODUCTS_SUCCESS,PRODUCT_DETAILS_FAIL,PRODUCT_DETAILS_SUCCESS,PRODUCT_DETAILS_REQUEST,CLEAR_ERRORS , NEW_REVIEW_FAIL,NEW_REVIEW_REQUEST,NEW_REVIEW_SUCCESS,NEW_REVIEW_RESET,ADMIN_PRODUCTS_FAIL,ADMIN_PRODUCTS_REQUEST,ADMIN_PRODUCTS_SUCCESS, NEW_PRODUCT_FAIL,NEW_PRODUCT_REQUEST,NEW_PRODUCT_RESET,NEW_PRODUCT_SUCCESS,DELETE_PRODUCT_FAIL,DELETE_PRODUCT_REQUEST,DELETE_PRODUCT_RESET,DELETE_PRODUCT_SUCCESS ,UPDATE_PRODUCT_FAIL,UPDATE_PRODUCT_REQUEST,UPDATE_PRODUCT_RESET,UPDATE_PRODUCT_SUCCESS} from "../constants/productConstant";
 import baseUrl from "../baseUrl";
+import mockProducts from "../mockProducts";
 
 export const getProducts = (keyword = "", page = 1, price = [1, 500], category = "", ratings = 0, limit = 8) => async (dispatch) => {
 
@@ -21,6 +22,20 @@ dispatch({type:ALL_PRODUCTS_REQUEST})
         
 
     } catch (error) {
+        if (process.env.NODE_ENV === "production") {
+            dispatch({
+                type: ALL_PRODUCTS_SUCCESS,
+                payload: {
+                    success: true,
+                    results: mockProducts,
+                    filteredProductsCount: mockProducts.length,
+                    totalResults: mockProducts.length,
+                    productsPerPage: mockProducts.length,
+                },
+            });
+            return;
+        }
+
         dispatch({
             type: ALL_PRODUCTS_FAIL,
             payload: error.response?.data?.error || error.response?.data?.message || error.message
@@ -42,6 +57,18 @@ export const getProductDetails = (id) => async (dispatch) => {
         })
 
     } catch (error) {
+        if (process.env.NODE_ENV === "production") {
+            const mockProduct = mockProducts.find((product) => product._id === id) || mockProducts[0];
+            dispatch({
+                type: PRODUCT_DETAILS_SUCCESS,
+                payload: {
+                    success: true,
+                    product: mockProduct,
+                },
+            });
+            return;
+        }
+
         dispatch({
             type: PRODUCT_DETAILS_FAIL,
             payload: error.response?.data?.error || error.response?.data?.message || error.message
