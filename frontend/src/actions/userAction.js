@@ -9,6 +9,9 @@ import baseUrl from "../baseUrl";
 import { CLEAR_ERRORS } from "../constants/userConstant";
 import cookie from "js-cookie";
 
+const isProdWithoutApi =
+    process.env.NODE_ENV === "production" && !process.env.REACT_APP_API_URL;
+
 
 export const login = (email,password) => async (dispatch) => {
 
@@ -22,7 +25,7 @@ export const login = (email,password) => async (dispatch) => {
             withCredentials: true
         }
 
-        const {data} = await axios.post(`${baseUrl}/api/v1/login`,{email,password},config)
+        const {data} = await axios.post(`${baseUrl}/api/v1/login`,{email,password},{...config, timeout: 8000})
       
         // set cookie
         cookie.set('token',data.token,{expires: 2})
@@ -52,7 +55,7 @@ export const register = (userData) => async (dispatch) => {
             withCredentials: true
         }
 
-        const {data} = await axios.post(`${baseUrl}/api/v1/signup`,userData,config)
+        const {data} = await axios.post(`${baseUrl}/api/v1/signup`,userData,{...config, timeout: 8000})
 
         // set cookie
         cookie.set('token',data.token,{expires: 2})
@@ -78,9 +81,17 @@ export const loadUser = () => async (dispatch) => {
 
         dispatch({type:LOAD_USER_REQUEST})
 
+        if (isProdWithoutApi) {
+            dispatch({
+                type: LOAD_USER_FAIL,
+                payload: 'Live backend is not configured',
+            })
+            return
+        }
+
         // send cookie to backend
 
-        const {data} = await axios.get(`${baseUrl}/api/v1/me`,{withCredentials:true})
+        const {data} = await axios.get(`${baseUrl}/api/v1/me`,{withCredentials:true, timeout: 8000})
 
         dispatch({
             type:LOAD_USER_SUCCESS,
@@ -103,9 +114,17 @@ export const logout = () => async (dispatch) => {
 
     try {
 
+        if (isProdWithoutApi) {
+            cookie.remove('token')
+            dispatch({
+                type: LOGOUT_SUCCESS,
+            })
+            return
+        }
+
         await axios.get(`${baseUrl}/api/v1/logout`  
         
-        ,{withCredentials:true})
+        ,{withCredentials:true, timeout: 8000})
         cookie.remove('token')
 
         dispatch({
@@ -137,7 +156,7 @@ export const updateProfile = (userData) => async (dispatch) => {
             }
 
 
-            const {data} = await axios.put(`${baseUrl}/api/v1/me/update`, userData, config)
+            const {data} = await axios.put(`${baseUrl}/api/v1/me/update`, userData, {...config, timeout: 8000})
 
          console.log(data)
 
