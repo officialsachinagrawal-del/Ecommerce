@@ -1,6 +1,7 @@
 const baseUrl =
-  process.env.NODE_ENV !== "production"
+  process.env.REACT_APP_API_URL ||
+  (process.env.NODE_ENV !== "production"
     ? "http://localhost:5000"
-    : "https://faeshare.herokuapp.com";
+    : "https://ecommerce-api.onrender.com");
 
 export default baseUrl;

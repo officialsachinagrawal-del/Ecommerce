@@ -1,6 +1,6 @@
 import './App.css';
 import Header from './components/Layout/Header';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Footer from './components/Layout/Footer';
 import About from './components/Layout/About';
 import Contact from './components/Layout/Contact';
