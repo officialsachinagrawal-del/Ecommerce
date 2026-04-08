@@ -6,12 +6,16 @@ import mockProducts from "../mockProducts";
 const isProdWithoutApi =
     process.env.NODE_ENV === "production" && !process.env.REACT_APP_API_URL;
 
+const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+
+const shouldUseMockData = isProdWithoutApi || isOffline;
+
 export const getProducts = (keyword = "", page = 1, price = [1, 500], category = "", ratings = 0, limit = 8) => async (dispatch) => {
 
     try {
 dispatch({type:ALL_PRODUCTS_REQUEST})
 
-        if (isProdWithoutApi) {
+        if (shouldUseMockData) {
             dispatch({
                 type: ALL_PRODUCTS_SUCCESS,
                 payload: {
@@ -39,7 +43,7 @@ dispatch({type:ALL_PRODUCTS_REQUEST})
         
 
     } catch (error) {
-        if (process.env.NODE_ENV === "production") {
+        if (shouldUseMockData) {
             dispatch({
                 type: ALL_PRODUCTS_SUCCESS,
                 payload: {
@@ -66,7 +70,7 @@ export const getProductDetails = (id) => async (dispatch) => {
 
         dispatch({ type: PRODUCT_DETAILS_REQUEST })
 
-        if (isProdWithoutApi) {
+        if (shouldUseMockData) {
             const mockProduct = mockProducts.find((product) => product._id === id) || mockProducts[0];
             dispatch({
                 type: PRODUCT_DETAILS_SUCCESS,
@@ -86,7 +90,7 @@ export const getProductDetails = (id) => async (dispatch) => {
         })
 
     } catch (error) {
-        if (process.env.NODE_ENV === "production") {
+        if (shouldUseMockData) {
             const mockProduct = mockProducts.find((product) => product._id === id) || mockProducts[0];
             dispatch({
                 type: PRODUCT_DETAILS_SUCCESS,

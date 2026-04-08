@@ -8,6 +8,7 @@ import Loader from '../Layout/loader'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import { optimizeImageUrl } from '../../imageUtils'
+import noImage from '../../assets/no-image.svg'
 
 
 function Orderdetails() {
@@ -142,6 +143,10 @@ function Orderdetails() {
                             alt={item.name}
                             loading='lazy'
                             decoding='async'
+                                                        onError={(e) => {
+                                                            e.currentTarget.onerror = null;
+                                                            e.currentTarget.src = noImage;
+                                                        }}
                             />
 
                             <Link

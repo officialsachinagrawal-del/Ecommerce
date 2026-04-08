@@ -6,6 +6,7 @@ import MetaData from './Layout/MetaData'
 import { Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
 import { optimizeImageUrl } from '../imageUtils'
+import noImage from '../assets/no-image.svg'
 
 
 function Confirmorder() {
@@ -93,6 +94,10 @@ function Confirmorder() {
                             alt={item.name}
                             loading='lazy'
                             decoding='async'
+                            onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = noImage;
+                            }}
                             />
 
                             <Link
