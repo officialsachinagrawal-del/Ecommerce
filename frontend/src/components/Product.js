@@ -1,49 +1,104 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Rating from '@mui/material/Rating'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useState, useEffect } from 'react';
 import noImage from '../assets/no-image.svg'
 
-// const options = {
-//     edit: false,
-//     color: "gray",
-//     activeColor: "yellow",
-//     size: window.innerWidth < 768 ? 20 : 30,
-//     value: 3.5,
-//     isHalf: true,
-    
-// }
+function Product({id, name, price, image, rating, reviewsCount, ratings}) {
+  const [isFavorite, setIsFavorite] = useState(false);
 
+  // Cleanup function (if needed in future)
+  useEffect(() => {
+    return () => {
+      setIsFavorite(false);
+    }
+  }, [])
 
-
-function Product({id,name,price,image,rating,reviewsCount,ratings}) {
   const productImage =
     Array.isArray(image) && image[0]?.url
       ? image[0].url
       : noImage;
   
   return (
-    <Link to={`/product/${id}`} >
+    <Link to={`/product/${id}`} className="group">
+      <div className="bg-white rounded-xl shadow-base hover:shadow-lg transition-all duration-300 overflow-hidden hover:-translate-y-2">
         
-    <div key={id} className="bg-white h-full min-height: 20em   rounded-lg shadow-lg  overflow-hidden hover:scale-105 transition-transform duration-300">
+        {/* Image Container */}
+        <div className="relative bg-secondary-50 overflow-hidden h-48 md:h-64 flex items-center justify-center">
+          <img
+            src={productImage}
+            alt={name}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = noImage;
+            }}
+          />
+          
+          {/* Overlay Badge */}
+          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+          
+          {/* Favorite Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsFavorite(!isFavorite);
+            }}
+            className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+          >
+            {isFavorite ? (
+              <FavoriteIcon sx={{ color: '#ef4444', width: 20, height: 20 }} />
+            ) : (
+              <FavoriteBorderIcon sx={{ color: '#cbd5e1', width: 20, height: 20 }} />
+            )}
+          </button>
 
-              <img
-                src={productImage}
-                alt={name}
-                className="block mx-auto md:w-[45%] w-[40%]  object-cover rounded-t-lg"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = noImage;
-                }}
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2">{name}</h3>
-                <Rating readOnly precision={0.5} value={Number(ratings) || 0} size="small" />
-                {/* number of reviews */}
-                <p className="text-gray-600 mb-1">{reviewsCount} reviews</p>
-                <p className="text-gray-600">₹{Number(price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-              </div>
-              
-              
+          {/* New Badge */}
+          <div className="absolute top-3 left-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+            New
+          </div>
+        </div>
+
+        {/* Content Container */}
+        <div className="p-4 md:p-5">
+          {/* Product Name */}
+          <h3 className="text-sm md:text-base font-semibold text-secondary-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+            {name}
+          </h3>
+
+          {/* Rating */}
+          <div className="flex items-center gap-2 mb-3">
+            <Rating 
+              readOnly 
+              precision={0.5} 
+              value={Number(ratings) || 0} 
+              size="small"
+              sx={{ color: '#f59e0b' }}
+            />
+            <span className="text-xs text-secondary-500">({reviewsCount})</span>
+          </div>
+
+          {/* Price */}
+          <div className="mb-4">
+            <p className="text-lg md:text-xl font-bold text-secondary-900">
+              ₹{Number(price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </p>
+          </div>
+
+          {/* Add to Cart Button */}
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            className="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold py-2 px-3 rounded-lg hover:shadow-md transition-all duration-300 text-sm md:text-base"
+          >
+            View Details
+          </button>
+        </div>
       </div>
     </Link>
   )

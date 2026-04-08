@@ -36,7 +36,10 @@ const {isAuthenticated,user } = useSelector(state => state.user)
 
   useEffect(() => {
     store.dispatch(loadUser())
-
+    // Proper cleanup function (even if empty)
+    return () => {
+      // Cleanup if needed
+    }
   }, [])
  
   return (

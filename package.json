@@ -7,6 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node backend/server.js",
     "dev": "nodemon backend/server.js",
+    "dev:backend": "nodemon backend/server.js",
+    "dev:frontend": "npm start --prefix frontend",
+    "dev:full": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "seed:products": "node backend/seeder/seedProducts.js"
   },
   "author": "Abhishek",
@@ -29,5 +32,8 @@
     "razorpay": "^2.9.6",
     "stripe": "^12.8.0",
     "validator": "^13.9.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }

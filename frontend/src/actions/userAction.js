@@ -12,6 +12,18 @@ import cookie from "js-cookie";
 const isProdWithoutApi =
     process.env.NODE_ENV === "production" && !process.env.REACT_APP_API_URL;
 
+const getApiErrorMessage = (error) => {
+    if (error?.code === 'ECONNABORTED') {
+        return 'Request timed out. Please try again.'
+    }
+
+    if (error?.message === 'Network Error') {
+        return `Unable to reach API at ${baseUrl}. Start backend server on port 5000.`
+    }
+
+    return error.response?.data?.error || error.response?.data?.message || error.message
+}
+
 
 export const login = (email,password) => async (dispatch) => {
 
@@ -40,7 +52,7 @@ export const login = (email,password) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type:LOGIN_FAIL,
-            payload: error.response?.data?.error || error.message
+            payload: getApiErrorMessage(error)
         })
     }
 }
@@ -68,7 +80,7 @@ export const register = (userData) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type:REGISTER_FAIL,
-            payload: error.response?.data?.error || error.message
+            payload: getApiErrorMessage(error)
         })
     }
 }
@@ -102,7 +114,7 @@ export const loadUser = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type:LOAD_USER_FAIL,
-            payload: error.response?.data?.error || error.message
+            payload: getApiErrorMessage(error)
         })
     }
    
@@ -134,7 +146,7 @@ export const logout = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type:LOGOUT_FAIL,
-            payload: error.response.data.message
+            payload: getApiErrorMessage(error)
         })
     }
 
@@ -168,7 +180,7 @@ export const updateProfile = (userData) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type:UPDATE_PROFILE_FAIL,
-            payload: error.response?.data?.error || error.response?.data?.message || error.message
+            payload: getApiErrorMessage(error)
         })
     }
 

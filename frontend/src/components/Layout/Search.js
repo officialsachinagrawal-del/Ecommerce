@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { getProducts } from '../../actions/productAction'
 import Loader from '../Layout/loader'
 import MetaData from './MetaData'
+import { useAlert } from 'react-alert'
 
 function Search() {
 
@@ -17,6 +18,7 @@ function Search() {
 
     
   const dispatch = useDispatch();
+  const alert = useAlert();
 
   const { loading,  searchProducts, error, productsCount } = useSelector(
     (state) => state.products
@@ -25,11 +27,11 @@ function Search() {
     useEffect(() => {
          
         if (error) {
-            return alert.error(error);
+        alert.error(error);
         }
         
         dispatch(getProducts(keyword,page, price, category, ratings))
-    }, [dispatch, error, keyword, page,price,category, ratings])
+    }, [dispatch, error, keyword, page,price,category, ratings, alert])
     
     // const searchSubmitHandler = (e) =>{
     //     e.preventDefault()

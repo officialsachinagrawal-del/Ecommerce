@@ -1,103 +1,182 @@
 import React from 'react'
-// import {ReactNavbar} from "overlay-navbar"
 import { Link } from 'react-router-dom'
-// import { IconButton } from '@mui/material';
-// import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-// import LocalMallIcon from '@mui/icons-material/LocalMall';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import DetailsUser from './DetailsUser';
-import {reactLocalStorage} from 'reactjs-localstorage';
-import { useState } from 'react';
-import { useSelector,useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
+function Header({isAuthenticated, user}) {
+  const { cartItems } = useSelector(state => state.cart)
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-
-
-
-function Header({isAuthenticated, user  }  ) {
-
-     const dispatch = useDispatch()
-
-    const { cartItems } = useSelector(state => state.cart)
-
-
-
-  
-
-  
+  useEffect(() => {
+    // Cleanup function when component unmounts
+    return () => {
+      setMobileOpen(false);
+    }
+  }, [])
 
   const StyledBadge = styled(Badge)(({ theme }) => ({
-  '& .MuiBadge-badge': {
-    right: 23,
-    top: 1,
-    border: `1px solid ${theme.palette.background.paper}`,
-    padding: '0 4px',
-  },
-}));
-  
+    '& .MuiBadge-badge': {
+      right: -3,
+      top: 13,
+      border: `2px solid white`,
+      padding: '0 4px',
+      backgroundColor: '#0ea5e9',
+      color: 'white',
+      fontWeight: 'bold',
+    },
+  }));
 
-
+  const toggleMobile = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   return (
-  // <div className='bg-[#24292e]'>
-        <nav className="sticky top-0 z-10 bg-white">
-
-            <div className='md:flex  p-3 justify-between align-middle bg-gray-800'>
-                {/* logo */}
-                <div>
-              <h3 className='cursor-pointer flex text-[#fff]  font-serif md:text-3xl text-xl  '>
-            <img className='md:w-10 md:h-10 w-7  h-7 mr-1 justify-center' src="https://cdn-icons-png.flaticon.com/512/9149/9149134.png" alt="" />
-                 SmartShop
-              </h3>
-
-                </div>
-                {/* links */}
-                <div className='md:block hidden my-auto  gap-4'>
-               <ul className='text-[1.1em]  ' >
-                <Link to="/" className='m-5 text-[#fff]'>Home</Link>
-                <Link to="/products" className='m-5 text-[#fff]'>Products</Link>
-                <Link to="/contact" className='m-5 text-[#fff]'>Contact</Link>
-                <Link to="/about" className='m-5 text-[#fff]'>About</Link>
-               </ul>
-                </div>
-
-                {/* login,profile,search */}
-                <div className='md:block hidden  gap-4 '>
-               
-                   <Link to="/search"  >
-                   <SearchIcon  sx={{width:30,height:30,marginRight:3,color:'white' }}    />
-                   </Link>
-
-
-                   <Link to='/cart' >
-                <StyledBadge badgeContent={cartItems.length || 0} color="primary">
-                 <ShoppingCartIcon  sx={{width:30,height:30,marginRight:3,color:'white' }} />
-               </StyledBadge>
-                   </Link>
-
-
-                 {
-                    isAuthenticated ? <DetailsUser user={user} /> :
-                   <Link to='/login' >
-                     <AccountBoxIcon sx={{width:30,height:30,marginRight:3,color:'white' }} className='text-[#fff]'/>
-                   </Link>
-
-                  }
-
-                </div>
-                {/* hamburger */}
-                <div className='md:hidden block'>
-
-                </div>
+    <nav className="sticky top-0 z-50 bg-white shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg shadow-md">
+              <img 
+                className="w-6 h-6" 
+                src="https://cdn-icons-png.flaticon.com/512/9149/9149134.png" 
+                alt="SmartShop Logo"
+              />
             </div>
-  
-        </nav>
-// </div>
+            <h1 className="text-2xl font-bold text-secondary-900">SmartShop</h1>
+          </Link>
 
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
+            <ul className="flex gap-8 font-medium">
+              <li>
+                <Link to="/" className="text-secondary-700 hover:text-primary-500 transition-colors duration-200">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/products" className="text-secondary-700 hover:text-primary-500 transition-colors duration-200">
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-secondary-700 hover:text-primary-500 transition-colors duration-200">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-secondary-700 hover:text-primary-500 transition-colors duration-200">
+                  About
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Desktop Icons */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link to="/search" className="p-2 hover:bg-primary-50 rounded-lg transition-colors">
+              <SearchIcon sx={{ width: 24, height: 24, color: '#334155' }} />
+            </Link>
+
+            <Link to='/cart' className="p-2 hover:bg-primary-50 rounded-lg transition-colors">
+              <StyledBadge badgeContent={cartItems.length || 0} color="primary">
+                <ShoppingCartIcon sx={{ width: 24, height: 24, color: '#334155' }} />
+              </StyledBadge>
+            </Link>
+
+            {isAuthenticated ? (
+              <DetailsUser user={user} />
+            ) : (
+              <Link to='/login' className="p-2 hover:bg-primary-50 rounded-lg transition-colors">
+                <AccountBoxIcon sx={{ width: 24, height: 24, color: '#334155' }} />
+              </Link>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button onClick={toggleMobile} className="p-2">
+              {mobileOpen ? (
+                <CloseIcon sx={{ width: 24, height: 24 }} />
+              ) : (
+                <MenuIcon sx={{ width: 24, height: 24 }} />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-secondary-200 py-4 animate-slide-up">
+            <ul className="flex flex-col gap-4 font-medium mb-4">
+              <li>
+                <Link 
+                  to="/" 
+                  className="text-secondary-700 hover:text-primary-500 transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/products" 
+                  className="text-secondary-700 hover:text-primary-500 transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/contact" 
+                  className="text-secondary-700 hover:text-primary-500 transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/about" 
+                  className="text-secondary-700 hover:text-primary-500 transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  About
+                </Link>
+              </li>
+            </ul>
+            
+            <div className="flex items-center gap-4 pt-4 border-t border-secondary-200">
+              <Link to="/search" onClick={() => setMobileOpen(false)}>
+                <SearchIcon sx={{ width: 24, height: 24 }} />
+              </Link>
+              <Link to='/cart' onClick={() => setMobileOpen(false)}>
+                <StyledBadge badgeContent={cartItems.length || 0}>
+                  <ShoppingCartIcon sx={{ width: 24, height: 24 }} />
+                </StyledBadge>
+              </Link>
+              {isAuthenticated ? (
+                <DetailsUser user={user} />
+              ) : (
+                <Link to='/login' onClick={() => setMobileOpen(false)}>
+                  <AccountBoxIcon sx={{ width: 24, height: 24 }} />
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </nav>
   )
 }
 

@@ -1,8 +1,8 @@
 import React from 'react'
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel'
-import {useSelector, useDispatch} from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { getProductDetails } from '../actions/productAction'
 import Loader from './Layout/loader';
 import ReviewCard from './ReviewCard';
@@ -14,14 +14,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Rating from '@mui/material/Rating';
-import {newReview} from '../actions/productAction';
+import { newReview } from '../actions/productAction';
 import noImage from '../assets/no-image.svg'
-
-import {NEW_REVIEW_RESET} from '../constants/productConstant'
-
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { NEW_REVIEW_RESET } from '../constants/productConstant'
 
 function ProductDetails() {
-
   const alert = useAlert();
   const [quantity, setQuantity] = useState(1)
   const [rating, setRating] = useState(0)
@@ -29,263 +31,291 @@ function ProductDetails() {
   const [open, setOpen] = useState(false);
 
   const incrementQuantity = () => {
-
     const count = quantity + 1
-
-    if(count > product.quantity) return;
-
+    if (count > product.quantity) return;
     setQuantity(count)
-
   }
 
   const decrementQuantity = () => {
-
     const count = quantity - 1
-
-    if(count < 1) return;
-
+    if (count < 1) return;
     setQuantity(count)
   }
 
-  //  const reviews = [
-  //   {
-  //     name: 'John Doe',
-  //     role: 'CEO',
-  //     comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  //   },
-  //   {
-  //     name: 'Jane Smith',
-  //     role: 'Designer',
-  //     comment: 'Praesent volutpat nisi sed aliquam tristique.',
-  //   },
-  //   {
-  //     name: 'Mark Johnson',
-  //     role: 'Developer',
-  //     comment: 'Vestibulum id justo vel nulla faucibus aliquet.',
-  //   },  {
-  //     name: 'Mark Johnson',
-  //     role: 'Developer',
-  //     comment: 'Vestibulum id justo vel nulla faucibus aliquet.',
-  //   },
-  // ];
-
-  const {id} = useParams()
-  
-
-
+  const { id } = useParams()
   const dispatch = useDispatch()
+  const { loading, error, product } = useSelector(state => state.productDetails)
+  const { success, error: reviewError } = useSelector(state => state.newReview)
 
-  const {loading, error, product} = useSelector(state => state.productDetails)
-
-  const {success, error:reviewError  } = useSelector(state => state.newReview)
-
-   
   const addToCartHandler = () => {
     dispatch(addToCart(id, quantity))
     alert.success('Item Added to Cart')
   }
 
   const submitReviewToggle = () => {
-
-    open ? setOpen(false) : setOpen(true)
-
+    setOpen(!open)
   }
 
   const submitReviewHandler = () => {
-
     const formData = new FormData()
-
     formData.set('rating', rating)
     formData.set('comment', comment)
     formData.set('productId', id)
-
     dispatch(newReview(formData))
     setOpen(false)
   }
-  
 
   useEffect(() => {
-
-    if(error){
-      return alert.error(error)
+    if (error) {
+      alert.error(error)
     }
-
-    if(reviewError){
-      return alert.error(reviewError)
+    if (reviewError) {
+      alert.error(reviewError)
     }
-
-    if(success){
+    if (success) {
       alert.success('Review Posted Successfully')
-
-      dispatch({type: 'NEW_REVIEW_RESET'})
+      dispatch({ type: NEW_REVIEW_RESET })
     }
-
     dispatch(getProductDetails(id))
+  }, [dispatch, id, alert, error, reviewError, success])
 
-  }, [dispatch, id, alert, error, reviewError,success])
-
-
-
-
-  return (<>
-
-  { loading ? <Loader/> : 
- 
- <div className="md:flex md:flex-row md:justify-evenly grid    p-[6vmax]">
-    <MetaData title={product.name} />
-
-   <div className='md:min-w-[50%] my-auto  '>
-    <Carousel  >
-
-        {
-            product.images && product.images.map((item, i) => (
-              <img
-                key={i}
-                className='block md:w-[55%]  md:max-w-[90%] sm:w-[50%]  object-cover  mx-auto w-[60%] '
-                src={item?.url || noImage}
-                alt={product.name}
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = noImage;
-                }}
-              />
-            ))
-        }
-
-    </Carousel>
-   </div>
-   <div className=' md:w-[70%] text-center '>
-
-  <div className="">
-   <h2 className='text-center font-bold m-4 text-2xl'>
-    {product.name}
-   </h2>
-  </div>
-
-  <div className='flex align-middle justify-center'>
-      <Rating readOnly precision={0.5} value={Number(product.ratings) || 0} size="small" />
-   <p className="text-gray-600 ml-1 mb-2 ">({product.numOfReviews} reviews)</p>
-                {/* <h1 className='text-xl font-medium' >${product.price.toFixed(2)}</h1> */}
-  </div>
-
-  <div>
- <h1 className='text-2xl font-medium ' >${product.price}</h1>
-
-<div className="inline-flex m-3 border-t-2 border-b-2 border-gray-200 rounded-md">
-  <button  onClick={decrementQuantity} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
-   &#x2212;
-  </button>
-
- <span className="mx-4  my-auto">{quantity}</span>
-
-  <button onClick={incrementQuantity} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">
-    &#x2b;
-  </button>
-</div>
-
-<div >
-<button  
-disabled={product.quantity <1 ? true : false }
-onClick={ addToCartHandler } className=" bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium  text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 text-white   rounded-full">
-  Add to Cart
-</button>
-</div>
-
-
-
-  </div>
-
-
-  <p className='font-medium mt-4'>
-    Status:
-    {product.quantity > 0 ? <span className='text-green-500 m-1'>In Stock</span> : <span className='text-red-500 m-1'>Out of Stock</span>}
-
-  </p>
-
- 
- <div className='m-2 w-[50%] mx-auto ' >
-
-  <h2 className='text-[1.1em] font-medium'>Description :</h2>
-  <p className='text-[0.9em]'>{product.description}  </p>
- </div>
-
-<button
-onClick={submitReviewToggle}
-className="text-white mt-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium  text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800  f py-2 px-4 rounded-full">
-  Submit Review
-</button>
-           {/* <textarea id="comment" rows="4" class="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write a comment..." required></textarea> */}
-
-
-</div>
-
-  </div>
-}
-
-  {loading? <Loader/> : <div className="container mx-auto p-4 ">
-      <h2 className="text-2xl font-semibold mb-4">Customer Reviews</h2>
-
-
-       <Dialog
-       aria-labelledby='simple-dialog-title'
-        open={open}
-        onClose={submitReviewToggle}
-       >
-          <DialogTitle id='simple-dialog-title'>Add Review</DialogTitle>
-
-          <DialogContent>
-
-            <Rating
-            onChange={(e) => setRating(e.target.value)}
-            value={rating}
-            size='large'
-            
-            />
-     <textarea
-     value={comment}
-
-      onChange={(e) => setComment(e.target.value)}
-     
-    id="comment" rows="4" className=" text-sm bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500 " 
-     placeholder="Write a comment..." required></textarea>
-
-           <DialogActions>
-            <button
-            onClick={submitReviewToggle}
-            className='focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
-            >Cancel</button>
-
-            <button
-             
-             onClick={submitReviewHandler}
-            className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'
-            >Submit</button>
-           </DialogActions>
-
-          </DialogContent>
-
-
-       </Dialog>
-
+  return (
+    <>
+      <MetaData title={product.name} />
       
+      {loading ? <Loader /> : (
+        <div className="min-h-screen bg-secondary-50">
+          {/* Breadcrumb */}
+          <div className="bg-white border-b border-secondary-200">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+              <div className="flex items-center gap-2 text-sm text-secondary-600">
+                <a href="/products" className="hover:text-primary-600">Products</a>
+                <span>/</span>
+                <span className="font-medium text-secondary-900">{product.name}</span>
+              </div>
+            </div>
+          </div>
 
+          {/* Product Details */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mb-16">
+              
+              {/* Product Images */}
+              <div className="bg-white rounded-lg shadow-base p-6 sticky top-24 h-fit">
+                <Carousel
+                  navButtonsAlwaysVisible={true}
+                  sx={{
+                    '& .MuiIconButton-root': {
+                      backgroundColor: 'rgba(14, 165, 233, 0.8)',
+                      color: 'white',
+                      '&:hover': {
+                        backgroundColor: 'rgba(14, 165, 233, 1)',
+                      }
+                    }
+                  }}
+                >
+                  {product.images && product.images.map((item, i) => (
+                    <img
+                      key={i}
+                      className='w-full h-[400px] md:h-[500px] object-contain'
+                      src={item?.url || noImage}
+                      alt={`${product.name} ${i + 1}`}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = noImage;
+                      }}
+                    />
+                  ))}
+                </Carousel>
+              </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4  ">
-        { product.reviews && product.reviews[0]? product.reviews.map((review) => (
-          <ReviewCard key={review._id || review.user} review={review} />
-        )
-        
-        ): <p className=' '  >No Reviews</p>  
-        
-        }
-      </div>
+              {/* Product Info */}
+              <div>
+                {/* Title & Rating */}
+                <div className="mb-6">
+                  <h1 className="text-3xl md:text-4xl font-bold text-secondary-900 mb-4">
+                    {product.name}
+                  </h1>
+                  
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <Rating 
+                        readOnly 
+                        precision={0.5} 
+                        value={Number(product.ratings) || 0} 
+                        size="medium"
+                        sx={{ color: '#f59e0b' }}
+                      />
+                      <span className="text-secondary-600 text-sm">
+                        ({product.numOfReviews} reviews)
+                      </span>
+                    </div>
+                  </div>
 
+                  {/* Price */}
+                  <div className="mb-6 pb-6 border-b border-secondary-200">
+                    <p className="text-4xl font-bold text-primary-600 mb-2">
+                      ₹{Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                    <p className="text-secondary-600">
+                      {product.quantity > 0 ? (
+                        <span className="flex items-center gap-2 text-success font-semibold">
+                          <CheckCircleIcon sx={{ width: 20, height: 20 }} />
+                          In Stock
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2 text-danger font-semibold">
+                          <CancelIcon sx={{ width: 20, height: 20 }} />
+                          Out of Stock
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
 
-</div>
+                {/* Description */}
+                <div className="mb-8 pb-8 border-b border-secondary-200">
+                  <h3 className="text-lg font-semibold text-secondary-900 mb-3">Description</h3>
+                  <p className="text-secondary-600 leading-relaxed">
+                    {product.description}
+                  </p>
+                </div>
+
+                {/* Quantity & Add to Cart */}
+                <div className="mb-8">
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="text-secondary-700 font-medium">Quantity:</span>
+                    <div className="flex items-center border border-secondary-300 rounded-lg overflow-hidden">
+                      <button
+                        onClick={decrementQuantity}
+                        disabled={quantity <= 1}
+                        className="p-2 text-secondary-600 hover:bg-secondary-100 transition-colors disabled:opacity-50"
+                      >
+                        <RemoveIcon sx={{ width: 20, height: 20 }} />
+                      </button>
+                      <span className="px-6 py-2 font-bold text-secondary-900">{quantity}</span>
+                      <button
+                        onClick={incrementQuantity}
+                        disabled={quantity >= product.quantity}
+                        className="p-2 text-secondary-600 hover:bg-secondary-100 transition-colors disabled:opacity-50"
+                      >
+                        <AddIcon sx={{ width: 20, height: 20 }} />
+                      </button>
+                    </div>
+                    <span className="text-sm text-secondary-600">
+                      ({product.quantity} available)
+                    </span>
+                  </div>
+
+                  <button
+                    disabled={product.quantity < 1}
+                    onClick={addToCartHandler}
+                    className="w-full btn-primary flex items-center justify-center gap-2 text-lg py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ShoppingCartIcon sx={{ width: 24, height: 24 }} />
+                    Add to Cart
+                  </button>
+                </div>
+
+                {/* Review Button */}
+                <button
+                  onClick={submitReviewToggle}
+                  className="w-full btn-secondary"
+                >
+                  Write a Review
+                </button>
+              </div>
+            </div>
+
+            {/* Reviews Section */}
+            <div className="mt-16 pt-16 border-t border-secondary-200">
+              <h2 className="text-3xl font-bold text-secondary-900 mb-8">Customer Reviews</h2>
+
+              {/* Review Modal */}
+              <Dialog
+                open={open}
+                onClose={submitReviewToggle}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                  sx: {
+                    borderRadius: '0.75rem',
+                  }
+                }}
+              >
+                <DialogTitle className="text-lg font-bold text-secondary-900">
+                  Share Your Review
+                </DialogTitle>
+
+                <DialogContent className="py-6">
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">
+                        Rating
+                      </label>
+                      <Rating
+                        onChange={(e) => setRating(e.target.value)}
+                        value={Number(rating)}
+                        size="large"
+                        sx={{ color: '#f59e0b' }}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-secondary-700 mb-2">
+                        Your Review
+                      </label>
+                      <textarea
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        rows="4"
+                        className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="Share your thoughts about this product..."
+                        maxLength={500}
+                      />
+                      <p className="text-xs text-secondary-500 mt-1">
+                        {comment.length}/500 characters
+                      </p>
+                    </div>
+                  </div>
+                </DialogContent>
+
+                <DialogActions className="p-4 gap-2">
+                  <button
+                    onClick={submitReviewToggle}
+                    className="btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={submitReviewHandler}
+                    className="btn-primary"
+                  >
+                    Submit Review
+                  </button>
+                </DialogActions>
+              </Dialog>
+
+              {/* Reviews List */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {product.reviews && product.reviews.length > 0 ? (
+                  product.reviews.map((review) => (
+                    <ReviewCard key={review._id || review.user} review={review} />
+                  ))
+                ) : (
+                  <div className="col-span-full bg-white rounded-lg shadow-base p-12 text-center">
+                    <p className="text-secondary-600 text-lg">
+                      No reviews yet. Be the first to review this product!
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
-  </>
 
-  )
-}
-
-export default ProductDetails
+export default ProductDetails;

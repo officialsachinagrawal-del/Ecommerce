@@ -1,48 +1,145 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import MailIcon from '@mui/icons-material/Mail';
 
 function Footer() {
   return (
-    <footer className="bg-[#24292e]   ">
-      <div className="container mx-auto px-4 py-8 sm:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-          <div>
-            <Link className="text-white text-lg font-semibold mb-4 cursor-pointer">About Us</Link>
-            <p className="text-gray-400 cursor-pointer">Welcome to 
+    <footer className="bg-secondary-900">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          
+          {/* Company Info */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg">
+                <img 
+                  className="w-6 h-6" 
+                  src="https://cdn-icons-png.flaticon.com/512/9149/9149134.png" 
+                  alt="SmartShop"
+                />
+              </div>
+              <h3 className="text-xl font-bold text-white">SmartShop</h3>
+            </div>
+            <p className="text-secondary-300 leading-relaxed text-sm">
+              Your ultimate destination for quality products. We bring together a curated collection of electronics, fashion, home decor, and more.
+            </p>
+            {/* Social Links */}
+            <div className="flex gap-4 pt-2">
+              <a href="#" className="text-secondary-400 hover:text-primary-500 transition-colors p-2 hover:bg-secondary-800 rounded-lg">
+                <FacebookIcon sx={{ width: 20, height: 20 }} />
+              </a>
+              <a href="#" className="text-secondary-400 hover:text-primary-500 transition-colors p-2 hover:bg-secondary-800 rounded-lg">
+                <TwitterIcon sx={{ width: 20, height: 20 }} />
+              </a>
+              <a href="#" className="text-secondary-400 hover:text-primary-500 transition-colors p-2 hover:bg-secondary-800 rounded-lg">
+                <InstagramIcon sx={{ width: 20, height: 20 }} />
+              </a>
+              <a href="#" className="text-secondary-400 hover:text-primary-500 transition-colors p-2 hover:bg-secondary-800 rounded-lg">
+                <LinkedInIcon sx={{ width: 20, height: 20 }} />
+              </a>
+            </div>
+          </div>
 
- our e-commerce store, we aim to bring together a curated collection of high-quality products from various categories, including fashion, electronics, home decor, and more. Our team handpicks each item, ensuring that it meets our strict standards of quality, style, and functionality.</p>
-          </div>
+          {/* Quick Links */}
           <div>
-            <h2 className="text-white text-lg font-semibold mb-4 cursor-pointer">Categories</h2>
-            <ul className="text-gray-400 cursor-pointer">
-              <li>Men's Clothing</li>
-              <li>Women's Clothing</li>
-              <li>Electronics</li>
-              <li>Home &amp; Furniture</li>
+            <h3 className="text-lg font-bold text-white mb-6">Quick Links</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/" className="text-secondary-300 hover:text-primary-400 transition-colors text-sm">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/products" className="text-secondary-300 hover:text-primary-400 transition-colors text-sm">
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-secondary-300 hover:text-primary-400 transition-colors text-sm">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-secondary-300 hover:text-primary-400 transition-colors text-sm">
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
+
+          {/* Support */}
           <div>
-            <h2 className="text-white text-lg font-semibold mb-4 cursor-pointer">Customer Service</h2>
-            <ul className="text-gray-400 cursor-pointer">
-              <li>Shipping &amp; Returns</li>
-              <li>Contact Us</li>
-              <li>FAQs</li>
-              <li>Privacy Policy</li>
+            <h3 className="text-lg font-bold text-white mb-6">Customer Support</h3>
+            <ul className="space-y-3">
+              <li>
+                <a href="#" className="text-secondary-300 hover:text-primary-400 transition-colors text-sm">
+                  Shipping & Returns
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-secondary-300 hover:text-primary-400 transition-colors text-sm">
+                  FAQ
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-secondary-300 hover:text-primary-400 transition-colors text-sm">
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-secondary-300 hover:text-primary-400 transition-colors text-sm">
+                  Terms of Service
+                </a>
+              </li>
             </ul>
           </div>
+
+          {/* Newsletter */}
           <div>
-            <h2 className="text-white text-lg font-semibold mb-4 cursor-pointer">Stay Connected</h2>
-            <p className="text-gray-400 cursor-pointer">Subscribe to our newsletter for updates and promotions.</p>
-            <div className="mt-4">
-              <input type="email" placeholder="Enter your email" className="bg-gray-800 rounded-md px-4 py-2 w-full" />
-              <button className="bg-indigo-600 text-white rounded-md px-4 py-2 mt-2 w-full">Subscribe</button>
+            <h3 className="text-lg font-bold text-white mb-6">Newsletter</h3>
+            <p className="text-secondary-300 text-sm mb-4">
+              Subscribe to get special offers and updates delivered to your inbox.
+            </p>
+            <div className="space-y-2">
+              <div className="flex">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email" 
+                  className="flex-1 px-4 py-2 rounded-l-lg bg-secondary-800 text-white placeholder-secondary-500 border border-secondary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                />
+                <button className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-r-lg transition-colors font-medium">
+                  <MailIcon sx={{ width: 18, height: 18 }} />
+                </button>
+              </div>
+              <p className="text-xs text-secondary-400">
+                We'll never share your email. Unsubscribe at any time.
+              </p>
             </div>
           </div>
         </div>
-      </div>
-      <div className="bg-gray-800 py-4">
-        <div className="container mx-auto px-4">
-          <p className="text-center text-gray-400">© 2023 SmartShop. All rights reserved.</p>
+
+        {/* Divider */}
+        <div className="border-t border-secondary-800 my-12"></div>
+
+        {/* Bottom Section */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-secondary-400 text-sm">
+          <p>© 2024 SmartShop. All rights reserved.</p>
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-primary-400 transition-colors">
+              Terms & Conditions
+            </a>
+            <a href="#" className="hover:text-primary-400 transition-colors">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-primary-400 transition-colors">
+              Cookie Policy
+            </a>
+          </div>
         </div>
       </div>
     </footer>
