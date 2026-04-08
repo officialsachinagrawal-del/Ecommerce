@@ -7,6 +7,7 @@ import { useAlert } from 'react-alert'
 import { useEffect } from 'react'
 import {useNavigate} from "react-router-dom"
 import Avatar from '@mui/material/Avatar';
+import { optimizeImageUrl } from '../../imageUtils';
 
 const fallbackAvatarUrl = 'https://dummyimage.com/240x240/667eea/ffffff&text=User';
 
@@ -42,7 +43,7 @@ function Account() {
             
            <Avatar
              alt={user?.name || 'User'}
-             src={user?.avatar?.url || fallbackAvatarUrl}
+             src={optimizeImageUrl(user?.avatar?.url, { width: 360, height: 360 }) || fallbackAvatarUrl}
              sx={{ width: 180, height: 180, margin: '0 auto 20px' }}
            />
 <p className='text-center font-sans text-xl m-5 font-medium'>{user.name}</p>

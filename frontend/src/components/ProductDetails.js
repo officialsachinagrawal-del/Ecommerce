@@ -22,6 +22,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { NEW_REVIEW_RESET } from '../constants/productConstant'
+import { optimizeImageUrl } from '../imageUtils';
 
 function ProductDetails() {
   const alert = useAlert();
@@ -118,8 +119,10 @@ function ProductDetails() {
                     <img
                       key={i}
                       className='w-full h-[400px] md:h-[500px] object-contain'
-                      src={item?.url || noImage}
+                      src={optimizeImageUrl(item?.url, { width: 900, height: 900, crop: 'limit' }) || noImage}
                       alt={`${product.name} ${i + 1}`}
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                      decoding='async'
                       onError={(e) => {
                         e.currentTarget.onerror = null;
                         e.currentTarget.src = noImage;

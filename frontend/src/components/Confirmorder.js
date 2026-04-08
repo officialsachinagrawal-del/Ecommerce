@@ -5,6 +5,7 @@ import Checkoutstep from './Checkoutstep'
 import MetaData from './Layout/MetaData'
 import { Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
+import { optimizeImageUrl } from '../imageUtils'
 
 
 function Confirmorder() {
@@ -88,7 +89,11 @@ function Confirmorder() {
                         key={item.product}>
                             <img
                             className='w-20 h-20 md:w-32 md:h-32 object-cover'
-                            src={item.image} alt={item.name} />
+                            src={optimizeImageUrl(item.image, { width: 200, height: 200 })}
+                            alt={item.name}
+                            loading='lazy'
+                            decoding='async'
+                            />
 
                             <Link
                             className='text-blue-500 hover:underline'

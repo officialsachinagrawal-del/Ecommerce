@@ -20,6 +20,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import { useAlert } from 'react-alert';
 import { logout } from '../../actions/userAction';
 import Backdrop from '@mui/material/Backdrop';
+import { optimizeImageUrl } from '../../imageUtils';
 
 const fallbackAvatarUrl = 'https://dummyimage.com/150x150/667eea/ffffff&text=User';
 
@@ -62,7 +63,7 @@ function DetailsUser({user}) {
           >
               <Avatar
                 alt={user?.name || 'User'}
-                src={user?.avatar?.url || fallbackAvatarUrl}
+                src={optimizeImageUrl(user?.avatar?.url, { width: 120, height: 120 }) || fallbackAvatarUrl}
                 sx={{ width: 40, height: 40 }}
               />
           </IconButton>

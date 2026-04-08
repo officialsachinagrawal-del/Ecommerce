@@ -7,6 +7,7 @@ import MetaData from '../Layout/MetaData'
 import Loader from '../Layout/loader'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
+import { optimizeImageUrl } from '../../imageUtils'
 
 
 function Orderdetails() {
@@ -137,7 +138,11 @@ function Orderdetails() {
                         key={item.product}>
                             <img
                             className='w-[40%] md:w-32 md:h-32 object-cover'
-                            src={item.image} alt={item.name} />
+                            src={optimizeImageUrl(item.image, { width: 200, height: 200 })}
+                            alt={item.name}
+                            loading='lazy'
+                            decoding='async'
+                            />
 
                             <Link
                             className='text-blue-500 hover:underline'

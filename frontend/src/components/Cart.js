@@ -5,6 +5,7 @@ import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
+import { optimizeImageUrl } from '../imageUtils';
 
 function Cart() {
   const dispatch = useDispatch()
@@ -98,8 +99,10 @@ function Cart() {
                         {/* Product Image */}
                         <div className="flex-shrink-0 w-20 h-20 md:w-24 md:h-24 bg-secondary-100 rounded-lg overflow-hidden">
                           <img 
-                            src={image} 
+                            src={optimizeImageUrl(image, { width: 160, height: 160 })} 
                             alt={name}
+                            loading='lazy'
+                            decoding='async'
                             className='w-full h-full object-cover'
                           />
                         </div>
