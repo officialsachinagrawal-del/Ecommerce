@@ -14,6 +14,8 @@ const allowedOrigins = [
     process.env.FRONTEND_URL,
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
 ].filter(Boolean);
 
 app.use(
@@ -26,14 +28,14 @@ app.use(
                 /^http:\/\/localhost:\d{2,5}$/.test(origin) ||
                 /^http:\/\/127\.0\.0\.1:\d{2,5}$/.test(origin);
 
-            const isLan3000 =
-                /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}:3000$/.test(origin) ||
-                /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}:3000$/.test(origin) ||
-                /^http:\/\/172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}:3000$/.test(origin);
+            const isLanLocalDev =
+                /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}:\d{2,5}$/.test(origin) ||
+                /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5}$/.test(origin) ||
+                /^http:\/\/172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}:\d{2,5}$/.test(origin);
 
             const isGithubPages = /^https:\/\/officialsachinagrawal-del\.github\.io$/.test(origin);
 
-            if (allowedOrigins.includes(origin) || isLocalhost || isLan3000 || isGithubPages) {
+            if (allowedOrigins.includes(origin) || isLocalhost || isLanLocalDev || isGithubPages) {
                 return callback(null, true);
             }
 

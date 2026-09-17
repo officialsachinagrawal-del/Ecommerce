@@ -5,9 +5,9 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useState, useEffect } from 'react';
 import noImage from '../assets/no-image.svg'
-import { optimizeImageUrl } from '../imageUtils';
+import { resolveProductCardImage } from '../imageUtils';
 
-function Product({id, name, price, image, rating, reviewsCount, ratings}) {
+function Product({id, name, price, image, category, rating, reviewsCount, ratings}) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Cleanup function (if needed in future)
@@ -17,10 +17,7 @@ function Product({id, name, price, image, rating, reviewsCount, ratings}) {
     }
   }, [])
 
-  const productImage =
-    Array.isArray(image) && image[0]?.url
-      ? optimizeImageUrl(image[0].url, { width: 520, height: 520 })
-      : noImage;
+  const productImage = resolveProductCardImage(image, name, category, { width: 520, height: 520 }) || noImage;
   
   return (
     <Link to={`/product/${id}`} className="group">

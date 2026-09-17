@@ -61,7 +61,7 @@ function Search() {
        { loading? <Loader/>: <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             
            { keyword&&searchProducts&&searchProducts.map((product) => (
-            <Product key={product._id} id={product._id} name={product.name} price={product.price} image={product.images} rating={product.rating} ratings={product.ratings} reviewsCount={product.numOfReviews}  />
+            <Product key={product._id} id={product._id} name={product.name} price={product.price} image={product.images} category={product.category} rating={product.rating} ratings={product.ratings} reviewsCount={product.numOfReviews}  />
             
           ))}
         </div>

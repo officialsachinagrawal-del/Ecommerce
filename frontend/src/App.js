@@ -28,110 +28,214 @@ import Productlist from './components/Admin/Productlist';
 import Newproduct from './components/Admin/Newproduct';
 import Updateproduct from './components/Admin/Updateproduct';
 
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useSelector((state) => state.user);
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
+
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated } = useSelector((state) => state.user);
+  return !isAuthenticated ? children : <Navigate to="/" replace />;
+};
+
 function App() {
-
-  
-const {isAuthenticated,user } = useSelector(state => state.user)
-
+  const { isAuthenticated, user } = useSelector((state) => state.user);
 
   useEffect(() => {
-    store.dispatch(loadUser())
-    // Proper cleanup function (even if empty)
-    return () => {
-      // Cleanup if needed
-    }
-  }, [])
- 
+    store.dispatch(loadUser());
+  }, []);
+
   return (
     <div className="">
-       <Router>
-         <Header  isAuthenticated={isAuthenticated}  user={user} />
+      <Router>
+        <Header isAuthenticated={isAuthenticated} user={user} />
 
-         
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/product/:id"
+            element={
+              <ProtectedRoute>
+                <ProductDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/products"
+            element={
+              <ProtectedRoute>
+                <Allproducts />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <Search />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <ProtectedRoute>
+                <Contact />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <ProtectedRoute>
+                <About />
+              </ProtectedRoute>
+            }
+          />
 
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
 
-          <Routes>
-            <Route path="/" element={<Home/>}/>
-            <Route path="/product/:id" element={<ProductDetails/>}/>
-            <Route path="/products" element={<Allproducts/>}/>
-            <Route path="/search" element={<Search/>}/>
-            <Route path="/contact" element={<Contact/>}/>
-            <Route path="/about" element={<About/>}/>
-            <Route path="/login" element={<Login/>}/>
-            
-            <Route path="/signup" element={<Signup/>}/>
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <Signup />
+              </PublicRoute>
+            }
+          />
 
-            <Route
-              path="/account"
-              element={isAuthenticated ? <Account/> : <Navigate to="/login?redirect=account" replace />}
-            />
-            <Route
-              path="/me/update"
-              element={isAuthenticated ? <UserUpdateProfile user={user} /> : <Navigate to="/login?redirect=me/update" replace />}
-            />
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/me/update"
+            element={
+              <ProtectedRoute>
+                <UserUpdateProfile user={user} />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route path="/cart" element={<Cart/>}/>
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/shipping"
-              element={isAuthenticated ? <Shipping /> : <Navigate to="/login?redirect=shipping" replace />}
-            />
+          <Route
+            path="/shipping"
+            element={
+              <ProtectedRoute>
+                <Shipping />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/order/confirm"
-              element={isAuthenticated ? <Confirmorder/> : <Navigate to="/login?redirect=order/confirm" replace />}
-            />
+          <Route
+            path="/order/confirm"
+            element={
+              <ProtectedRoute>
+                <Confirmorder />
+              </ProtectedRoute>
+            }
+          />
 
+          <Route
+            path="/payment"
+            element={
+              <ProtectedRoute>
+                <Payment />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/payment"
-              element={
-                isAuthenticated
-                  ? <Payment/>
-                  : <Navigate to="/login?redirect=payment" replace />
-              }
-            />
+          <Route
+            path="/success"
+            element={
+              <ProtectedRoute>
+                <Successorder />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/success"
-              element={isAuthenticated ? <Successorder/> : <Navigate to="/login?redirect=success" replace />}
-            />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <Myorder />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/orders"
-              element={isAuthenticated ? <Myorder/> : <Navigate to="/login?redirect=orders" replace />}
-            />
+          <Route
+            path="/orders/:id"
+            element={
+              <ProtectedRoute>
+                <Orderdetails />
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/orders/:id"
-              element={isAuthenticated ? <Orderdetails/> : <Navigate to="/login?redirect=orders" replace />}
-            />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                {user?.role === 'admin' ? <Dashboard /> : <Navigate to="/" replace />}
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/dashboard"
-              element={isAuthenticated && user?.role === 'admin' ? <Dashboard/> : <Navigate to="/login" replace />}
-            />
+          <Route
+            path="/admin/products"
+            element={
+              <ProtectedRoute>
+                {user?.role === 'admin' ? <Productlist /> : <Navigate to="/" replace />}
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/admin/products"
-              element={isAuthenticated && user?.role === 'admin' ? <Productlist/> : <Navigate to="/login" replace />}
-            />
+          <Route
+            path="/admin/product"
+            element={
+              <ProtectedRoute>
+                {user?.role === 'admin' ? <Newproduct /> : <Navigate to="/" replace />}
+              </ProtectedRoute>
+            }
+          />
 
-            <Route
-              path="/admin/product"
-              element={isAuthenticated && user?.role === 'admin' ? <Newproduct/> : <Navigate to="/login" replace />}
-            />
-
-            <Route
-              path="/admin/product/:id"
-              element={isAuthenticated && user?.role === 'admin' ? <Updateproduct/> : <Navigate to="/login" replace />}
-            />
-
-
-          </Routes>
-        <Footer/>
-       </Router>
-
+          <Route
+            path="/admin/product/:id"
+            element={
+              <ProtectedRoute>
+                {user?.role === 'admin' ? <Updateproduct /> : <Navigate to="/" replace />}
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+        <Footer />
+      </Router>
     </div>
   );
 }

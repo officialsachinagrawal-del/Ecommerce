@@ -8,9 +8,38 @@ const generateTokenAndSetCookie = require('../utils/jwtToken');
 const userPng =
   "https://dummyimage.com/150x150/667eea/ffffff&text=User"; //default profile pic for the user
 
-  const cloudinary = require('cloudinary');
+const cloudinary = require('cloudinary');
 
+const uploadAvatarToCloudinary = async (avatarData) => {
+  if (typeof avatarData !== 'string' || avatarData.trim() === '') {
+    return null;
+  }
 
+  const hasCloudinaryCreds =
+    process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET;
+
+  if (!hasCloudinaryCreds) {
+    return null;
+  }
+
+  try {
+    const myCloud = await cloudinary.v2.uploader.upload(avatarData, {
+      folder: 'avatars',
+      width: 150,
+      crop: 'scale',
+    });
+
+    return {
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url,
+    };
+  } catch (error) {
+    console.log('Cloudinary avatar upload failed:', error.message);
+    return null;
+  }
+};
 
 // Create New user or Signup
 exports.createNewUser= async(req,res)=>{
@@ -64,20 +93,15 @@ exports.createNewUser= async(req,res)=>{
     };
 
     // Try to upload avatar if provided and Cloudinary is configured
-    if(req.body.avatar && process.env.CLOUDINARY_CLOUD_NAME) {
-      try {
-        const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-          folder: "avatars",
-          width: 150,
-          crop: "scale"
-        });
+    if (req.body.avatar) {
+      const uploadedAvatar = await uploadAvatarToCloudinary(req.body.avatar);
+      if (uploadedAvatar) {
+        avatarData = uploadedAvatar;
+      } else if (typeof req.body.avatar === 'string' && req.body.avatar.trim() !== '') {
         avatarData = {
-          public_id: myCloud.public_id,
-          url: myCloud.secure_url
+          public_id: 'local-avatar',
+          url: req.body.avatar,
         };
-      } catch(uploadErr) {
-        console.log('Avatar upload failed, using default:', uploadErr.message);
-        // Continue with default avatar if upload fails
       }
     }
 
@@ -264,27 +288,20 @@ exports.updateUserProfile = async (req, res) => {
     const avatarData = req.body.avatar;
 
     if (typeof avatarData === 'string' && avatarData.trim() !== '') {
-      if (
-        process.env.CLOUDINARY_CLOUD_NAME &&
-        process.env.CLOUDINARY_API_KEY &&
-        process.env.CLOUDINARY_API_SECRET
-      ) {
-        const imageId = user.avatar?.public_id;
+      const imageId = user.avatar?.public_id;
 
-        if (imageId && imageId !== 'default-avatar' && imageId !== 'local-avatar') {
+      if (imageId && imageId !== 'default-avatar' && imageId !== 'local-avatar') {
+        try {
           await cloudinary.v2.uploader.destroy(imageId);
+        } catch (destroyErr) {
+          console.log('Cloudinary destroy failed:', destroyErr.message);
         }
+      }
 
-        const myCloud = await cloudinary.v2.uploader.upload(avatarData, {
-          folder: 'avatars',
-          width: 150,
-          crop: 'scale',
-        });
+      const uploadedAvatar = await uploadAvatarToCloudinary(avatarData);
 
-        user.avatar = {
-          public_id: myCloud.public_id,
-          url: myCloud.secure_url,
-        };
+      if (uploadedAvatar) {
+        user.avatar = uploadedAvatar;
       } else {
         user.avatar = {
           public_id: 'local-avatar',

@@ -86,6 +86,7 @@ function Home() {
                   name={product.name} 
                   price={product.price} 
                   image={product.images} 
+                  category={product.category}
                   rating={product.rating} 
                   ratings={product.ratings} 
                   reviewsCount={product.numOfReviews}
