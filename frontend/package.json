@@ -47,6 +47,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "build": "react-scripts build",
+    "build:vercel": "node -e \"process.env.CI='false'; const result=require('child_process').spawnSync(process.execPath,[require.resolve('react-scripts/bin/react-scripts.js'),'build'],{stdio:'inherit',env:process.env}); process.exit(result.status || 0)\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
