@@ -10,20 +10,29 @@ const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false
 
 const shouldUseMockData = isProdWithoutApi || isOffline;
 
+const filterMockProducts = (products, keyword, price, category, ratings) => products.filter((product) => {
+    const matchesKeyword = !keyword || product.name.toLowerCase().includes(keyword.toLowerCase());
+    const matchesCategory = !category || product.category.toLowerCase() === category.toLowerCase();
+    const matchesPrice = product.price >= price[0] && product.price <= price[1];
+    const matchesRating = !ratings || product.ratings >= ratings;
+    return matchesKeyword && matchesCategory && matchesPrice && matchesRating;
+});
+
 export const getProducts = (keyword = "", page = 1, price = [1, 500], category = "", ratings = 0, limit = 8) => async (dispatch) => {
 
     try {
 dispatch({type:ALL_PRODUCTS_REQUEST})
 
         if (shouldUseMockData) {
+            const filteredProducts = filterMockProducts(mockProducts, keyword, price, category, ratings);
             dispatch({
                 type: ALL_PRODUCTS_SUCCESS,
                 payload: {
                     success: true,
-                    results: mockProducts,
-                    filteredProductsCount: mockProducts.length,
-                    totalResults: mockProducts.length,
-                    productsPerPage: mockProducts.length,
+                    results: filteredProducts,
+                    filteredProductsCount: filteredProducts.length,
+                    totalResults: filteredProducts.length,
+                    productsPerPage: filteredProducts.length,
                 },
             });
             return;
@@ -44,14 +53,15 @@ dispatch({type:ALL_PRODUCTS_REQUEST})
 
     } catch (error) {
         if (shouldUseMockData) {
+            const filteredProducts = filterMockProducts(mockProducts, keyword, price, category, ratings);
             dispatch({
                 type: ALL_PRODUCTS_SUCCESS,
                 payload: {
                     success: true,
-                    results: mockProducts,
-                    filteredProductsCount: mockProducts.length,
-                    totalResults: mockProducts.length,
-                    productsPerPage: mockProducts.length,
+                    results: filteredProducts,
+                    filteredProductsCount: filteredProducts.length,
+                    totalResults: filteredProducts.length,
+                    productsPerPage: filteredProducts.length,
                 },
             });
             return;

@@ -43,21 +43,13 @@
 
 
 
-const app = require('./app');
 const dotenv = require("dotenv");
 const path = require('path');
 const connectDB = require('./config/db');
-const cloudinary = require('cloudinary');
 
 dotenv.config({ path: path.join(__dirname, 'config', '.env') });
-
-const trimmedEnv = (value) => (typeof value === 'string' ? value.trim() : value);
-
-cloudinary.config({
-    cloud_name: trimmedEnv(process.env.CLOUDINARY_CLOUD_NAME),
-    api_key: trimmedEnv(process.env.CLOUDINARY_API_KEY),
-    api_secret: trimmedEnv(process.env.CLOUDINARY_API_SECRET)
-});
+const cloudinary = require('./config/cloudinary');
+const app = require('./app');
 
 function listenOnPort(portToUse) {
     return new Promise((resolve, reject) => {

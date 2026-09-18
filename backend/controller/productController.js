@@ -1,5 +1,5 @@
 const Product = require('../model/productModel')
-const cloudinary = require('cloudinary')
+const cloudinary = require('../config/cloudinary')
 
 // Create Product Admin
 exports.createProduct = async (req, res ) => {
@@ -222,30 +222,30 @@ exports.getProducts = async (req, res, next) => {
  
     // Build query object based on request parameters
     const query = {};
-    if (category) {
-      query.category = category;
+    if (category && category.trim()) {
+      query.category = { $regex: `^${category.trim()}$`, $options: 'i' };
     }
     if (priceMin || priceMax) {
       query.price = {};
       if (priceMin) {
-        query.price.$gte = priceMin;
+        query.price.$gte = Number(priceMin);
       }
       if (priceMax) {
-        query.price.$lte = priceMax;
+        query.price.$lte = Number(priceMax);
       }
     }
     if (ratingMin) {
       query.ratings = {};
      
        if (ratingMin)
-        query.ratings.$gte = ratingMin;
+        query.ratings.$gte = Number(ratingMin);
      
     
     }
 
-    // if (keyword) {
-    //   query.name = { $regex: keyword, $options: 'i' };
-    // }
+    if (keyword && keyword.trim()) {
+      query.name = { $regex: keyword.trim(), $options: 'i' };
+    }
 
     // Calculate total number of matching products
     const totalProducts = await Product.countDocuments(query);

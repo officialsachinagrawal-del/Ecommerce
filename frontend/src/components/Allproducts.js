@@ -36,6 +36,12 @@ function Allproducts() {
     window.scrollTo(0, 0);
   }
 
+  const handleCategoryChange = (value) => {
+    setCategory(value);
+    setPage(1);
+    setShowFilters(false);
+  }
+
   const priceHandler = (event, newValue) => {
     setPrice(newValue);
   };
@@ -77,7 +83,7 @@ function Allproducts() {
                   priceHandler={priceHandler}
                   categories={categories}
                   category={category}
-                  setCategory={setCategory}
+                  setCategory={handleCategoryChange}
                   ratings={ratings}
                   setRatings={setRatings}
                 />
@@ -100,7 +106,7 @@ function Allproducts() {
                       priceHandler={priceHandler}
                       categories={categories}
                       category={category}
-                      setCategory={setCategory}
+                      setCategory={handleCategoryChange}
                       ratings={ratings}
                       setRatings={setRatings}
                     />
@@ -127,7 +133,7 @@ function Allproducts() {
               ) : (
                 <>
                   <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-12">
-                    {products && products.map((product) => (
+                    {products && products.length > 0 ? products.map((product) => (
                       <div key={product._id} className="animate-fade-in">
                         <Product 
                           id={product._id} 
@@ -140,7 +146,11 @@ function Allproducts() {
                           reviewsCount={product.numOfReviews}
                         />
                       </div>
-                    ))}
+                    )) : (
+                      <p className="col-span-full py-16 text-center text-secondary-600">
+                        No products found in this category.
+                      </p>
+                    )}
                   </div>
 
                   {/* Pagination */}

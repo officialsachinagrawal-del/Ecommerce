@@ -8,7 +8,7 @@ const generateTokenAndSetCookie = require('../utils/jwtToken');
 const userPng =
   "https://dummyimage.com/150x150/667eea/ffffff&text=User"; //default profile pic for the user
 
-const cloudinary = require('cloudinary');
+const cloudinary = require('../config/cloudinary');
 
 const uploadAvatarToCloudinary = async (avatarData) => {
   if (typeof avatarData !== 'string' || avatarData.trim() === '') {

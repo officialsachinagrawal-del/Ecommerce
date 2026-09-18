@@ -125,8 +125,10 @@ const fallbackImageForProduct = (name = '', category = '') => {
 
 export const resolveProductCardImage = (images, name = '', category = '', optimizeOptions = {}) => {
   const rawUrl = Array.isArray(images) && images[0]?.url ? images[0].url : '';
+  const catalogKey = resolveCatalogKey(name, category);
+  const hasKnownProductType = catalogKey !== 'default';
 
-  if (typeof rawUrl === 'string' && rawUrl.trim() && !placeholderUrlPattern.test(rawUrl)) {
+  if (!hasKnownProductType && typeof rawUrl === 'string' && rawUrl.trim() && !placeholderUrlPattern.test(rawUrl)) {
     return optimizeImageUrl(rawUrl, optimizeOptions);
   }
 
