@@ -20,7 +20,7 @@ const getApiErrorMessage = (error) => {
     }
 
     if (error?.message === 'Network Error') {
-        return `Unable to reach API at ${baseUrl}. Start backend server on port 5000.`
+        return `Unable to reach API at ${baseUrl}. Start the backend server on port 5004.`
     }
 
     return error.response?.data?.error || error.response?.data?.message || error.message
