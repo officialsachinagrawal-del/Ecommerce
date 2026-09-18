@@ -34,6 +34,7 @@ backend/config/.env
 *.pid.lock
 *.log
 *.html
+!frontend/public/index.html
 *.env
 
 # Dependency directories
